@@ -1,1 +1,802 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guia Visual de Redes para Automação</title>
+  <!-- Font Awesome para ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Reset e base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+      background: #f4f7fb;
+      color: #1e293b;
+      transition: background 0.3s, color 0.3s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Tema escuro */
+    body.dark {
+      background: #0b1120;
+      color: #e2e8f0;
+    }
+
+    body.dark .card,
+    body.dark .info-box,
+    body.dark .topo-card {
+      background: #1e293b;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+      border-color: #334155;
+    }
+
+    body.dark .tab-btn {
+      background: #1e293b;
+      color: #94a3b8;
+    }
+
+    body.dark .tab-btn.active {
+      background: #2d3b52;
+      color: #f1f5f9;
+      border-bottom: 3px solid #38bdf8;
+    }
+
+    body.dark .footer {
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+    }
+
+    body.dark .lang-btn {
+      background: #1e293b;
+      color: #cbd5e1;
+    }
+
+    /* Layout principal */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      gap: 1rem;
+    }
+
+    .logo h1 {
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(145deg, #0b4b7a, #1e7bb0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    body.dark .logo h1 {
+      background: linear-gradient(145deg, #60a5fa, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .lang-btn {
+      background: #ffffff;
+      border: 1px solid #d1d9e6;
+      padding: 0.5rem 0.9rem;
+      border-radius: 30px;
+      font-weight: 500;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #1e293b;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .lang-btn i {
+      font-size: 0.9rem;
+    }
+
+    .lang-btn:hover {
+      background: #eef2f6;
+      transform: scale(1.02);
+    }
+
+    .theme-toggle {
+      background: #ffffff;
+      border: 1px solid #d1d9e6;
+      padding: 0.5rem 0.9rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #1e293b;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .theme-toggle:hover {
+      background: #eef2f6;
+    }
+
+    /* Abas */
+    .tabs {
+      display: flex;
+      gap: 0.4rem;
+      border-bottom: 2px solid #dce3ec;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 0.8rem 1.8rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 40px 40px 0 0;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #475569;
+      letter-spacing: 0.3px;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: #0b4b7a;
+      border-bottom: 3px solid #1e7bb0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    body.dark .tab-btn.active {
+      background: #1e293b;
+      color: #b7d9ff;
+      border-bottom: 3px solid #38bdf8;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fade 0.25s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fade {
+      0% { opacity: 0.3; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards cabos */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 2rem;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 1.8rem 1.2rem 1.8rem;
+      box-shadow: 0 12px 28px rgba(0, 20, 40, 0.06);
+      border: 1px solid #eaf0f6;
+      transition: all 0.2s;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 30px rgba(0, 40, 80, 0.08);
+      border-color: #b4c8dd;
+    }
+
+    .card i {
+      font-size: 2.6rem;
+      color: #1e7bb0;
+      background: #e9f2fa;
+      padding: 0.7rem;
+      border-radius: 60px;
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.dark .card i {
+      background: #2d3b52;
+      color: #60a5fa;
+    }
+
+    .card h3 {
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: #475569;
+      line-height: 1.5;
+      margin-top: 0.2rem;
+    }
+
+    body.dark .card p {
+      color: #cbd5e1;
+    }
+
+    .info-box {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 1.8rem 2rem;
+      margin: 1.8rem 0 0.5rem;
+      border: 1px solid #eaf0f6;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.02);
+      transition: 0.2s;
+      min-height: 120px;
+    }
+
+    .info-box h4 {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .info-box p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #1e293b;
+    }
+
+    body.dark .info-box p {
+      color: #e2e8f0;
+    }
+
+    /* Topologias */
+    .topo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 1.5rem 0 1.8rem;
+    }
+
+    .topo-card {
+      background: #ffffff;
+      border-radius: 30px;
+      padding: 1.8rem 2rem;
+      border: 1px solid #eaf0f6;
+      flex: 1 1 200px;
+      box-shadow: 0 8px 18px rgba(0, 20, 30, 0.02);
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: center;
+    }
+
+    .topo-card:hover {
+      transform: scale(1.02);
+      border-color: #a0bbd4;
+      box-shadow: 0 12px 24px rgba(0, 40, 70, 0.06);
+    }
+
+    .topo-card i {
+      font-size: 2.2rem;
+      color: #0b4b7a;
+      background: #e3edf6;
+      padding: 0.6rem;
+      border-radius: 50px;
+      width: 60px;
+      height: 60px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.3rem;
+    }
+
+    body.dark .topo-card i {
+      background: #2d3b52;
+      color: #60a5fa;
+    }
+
+    .topo-card h3 {
+      font-weight: 700;
+    }
+
+    .vantagens {
+      margin-top: 1.5rem;
+      padding-left: 1rem;
+      list-style: none;
+    }
+
+    .vantagens li {
+      padding: 0.3rem 0;
+      display: flex;
+      gap: 0.6rem;
+      align-items: baseline;
+    }
+
+    .vantagens li i {
+      color: #1e7bb0;
+      width: 1.2rem;
+      font-size: 0.9rem;
+    }
+
+    body.dark .vantagens li i {
+      color: #60a5fa;
+    }
+
+    /* footer */
+    .footer {
+      margin-top: 3.5rem;
+      padding: 2rem 1.5rem 1.8rem;
+      background: #ffffff;
+      border-top: 1px solid #dce3ec;
+      border-radius: 40px 40px 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .footer-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      font-size: 0.95rem;
+    }
+
+    .footer-info span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-info i {
+      color: #1e7bb0;
+      width: 1.2rem;
+    }
+
+    body.dark .footer-info i {
+      color: #60a5fa;
+    }
+
+    .footer small {
+      opacity: 0.7;
+      font-size: 0.8rem;
+    }
+
+    /* cookie */
+    .cookie-banner {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      max-width: 450px;
+      background: #ffffff;
+      padding: 1.2rem 1.8rem;
+      border-radius: 60px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+      border: 1px solid #dce3ec;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      z-index: 999;
+      backdrop-filter: blur(4px);
+      transition: 0.3s;
+    }
+
+    body.dark .cookie-banner {
+      background: #1e293b;
+      border-color: #334155;
+    }
+
+    .cookie-banner p {
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .cookie-btn {
+      background: #1e7bb0;
+      border: none;
+      padding: 0.5rem 1.4rem;
+      border-radius: 40px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .cookie-btn:hover {
+      background: #0f5a83;
+      transform: scale(1.02);
+    }
+
+    /* Responsividade */
+    @media (max-width: 700px) {
+      .container { padding: 1rem; }
+      .logo h1 { font-size: 1.4rem; }
+      .toolbar { gap: 0.4rem; }
+      .tab-btn { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
+      .card-grid { grid-template-columns: 1fr 1fr; }
+      .footer { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 480px) {
+      .card-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <h1><i class="fas fa-plug" style="margin-right: 8px; -webkit-text-fill-color: initial; background: none; color: #1e7bb0;"></i> AutoNet<span style="font-weight:300;">Guide</span></h1>
+      </div>
+      <div class="toolbar">
+        <button class="lang-btn" data-lang="pt"><i class="fas fa-language"></i> PT</button>
+        <button class="lang-btn" data-lang="en"><i class="fas fa-language"></i> EN</button>
+        <button class="lang-btn" data-lang="es"><i class="fas fa-language"></i> ES</button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema"><i class="fas fa-moon"></i></button>
+      </div>
+    </header>
+
+    <!-- Abas -->
+    <div class="tabs" id="tabHeaders">
+      <button class="tab-btn active" data-tab="tab1"><i class="fas fa-network-wired" style="margin-right:8px;"></i> <span data-key="cabos">Cabos Industriais</span></button>
+      <button class="tab-btn" data-tab="tab2"><i class="fas fa-sitemap" style="margin-right:8px;"></i> <span data-key="topologias">Topologias</span></button>
+    </div>
+
+    <!-- Aba 1: Cabos -->
+    <div id="tab1" class="tab-content active">
+      <div class="card-grid" id="caboCards">
+        <div class="card" data-cabo="trancado">
+          <i class="fas fa-arrow-right-arrow-left"></i>
+          <h3>Par Trançado</h3>
+          <p data-key="trancado_desc">Cabo de rede comum (Ethernet/Profinet).</p>
+        </div>
+        <div class="card" data-cabo="fibra">
+          <i class="fas fa-fiber-optic"></i>
+          <h3>Fibra Óptica</h3>
+          <p data-key="fibra_desc">O cabo de vidro. Longas distâncias sem interferência.</p>
+        </div>
+        <div class="card" data-cabo="wireless">
+          <i class="fas fa-wifi"></i>
+          <h3>Wireless</h3>
+          <p data-key="wireless_desc">Rede sem fio para sensores móveis ou difícil acesso.</p>
+        </div>
+      </div>
+      <div class="info-box" id="caboInfo">
+        <h4><i class="fas fa-microchip"></i> <span data-key="info_titulo">Clique em um cabo</span></h4>
+        <p id="caboDesc" data-key="info_padrao">Selecione um dos cabos acima para ver onde é usado na fábrica.</p>
+      </div>
+    </div>
+
+    <!-- Aba 2: Topologias -->
+    <div id="tab2" class="tab-content">
+      <div class="topo-grid">
+        <div class="topo-card" data-topo="estrela">
+          <i class="fas fa-star"></i>
+          <h3 data-key="estrela_tit">Rede em Estrela</h3>
+          <p style="font-size:0.9rem; opacity:0.7;" data-key="estrela_sub">Switch central</p>
+        </div>
+        <div class="topo-card" data-topo="barramento">
+          <i class="fas fa-grip-lines"></i>
+          <h3 data-key="barramento_tit">Rede em Barramento</h3>
+          <p style="font-size:0.9rem; opacity:0.7;" data-key="barramento_sub">Linha contínua</p>
+        </div>
+      </div>
+      <div class="info-box" id="topoInfo">
+        <h4><i class="fas fa-diagram-project"></i> <span data-key="topo_info_titulo">Detalhes da Topologia</span></h4>
+        <div id="topoDesc">
+          <p data-key="topo_padrao">Escolha um layout para ver vantagens e desvantagens.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-info">
+        <span><i class="fas fa-envelope"></i> isabellihoffmann@gmail.com</span>
+        <span><i class="fas fa-phone-alt"></i> (51) 91234-5678</span>
+        <span><i class="fas fa-building"></i> Catálogos Industriais</span>
+      </div>
+      <small>© 2026 · SENAI CETEMP · Automação Industrial</small>
+    </footer>
+  </div>
+
+  <!-- Cookie Banner -->
+  <div class="cookie-banner" id="cookieBanner">
+    <p><i class="fas fa-cookie-bite" style="margin-right:8px;"></i> <span data-key="cookie_text">Aceite cookies para melhor experiência.</span></p>
+    <button class="cookie-btn" id="acceptCookies"><span data-key="cookie_btn">Aceitar</span></button>
+  </div>
+
+  <script>
+    (function() {
+      // ---- DADOS ----
+      const dados = {
+        pt: {
+          cabos: {
+            trancado: "Cabo de rede comum (Ethernet/Profinet). Usado para ligar o CLP ao computador do supervisor.",
+            fibra: "O cabo de vidro. Usado para levar dados a longas distâncias na fábrica sem sofrer com a interferência dos motores elétricos.",
+            wireless: "Rede sem fio. Usado para monitorar sensores que ficam em locais móveis ou de difícil acesso."
+          },
+          topologias: {
+            estrela: "Todas as máquinas ligam em um aparelho central (Switch). Se uma máquina estragar, as outras continuam funcionando normal.",
+            barramento: "As máquinas são ligadas uma na outra em linha (como vagões de trem). Se o cabo partir no meio, metade da fábrica para."
+          },
+          vantagens: {
+            estrela: ["⭐ Manutenção isolada: falha em um nó não afeta os outros.", "🔌 Facilidade de expansão: basta conectar ao switch.", "📊 Monitoramento centralizado."],
+            barramento: ["📡 Baixo custo de cabeamento.", "🔗 Simples de implementar em pequenas redes.", "🔄 Menos equipamentos ativos."]
+          },
+          desvantagens: {
+            estrela: ["⚠️ Ponto único de falha: se o switch falha, toda a rede para.", "💰 Custo maior com switch e cabeamento."],
+            barramento: ["⛓️ Se o cabo rompe, parte da rede fica isolada.", "🐌 Degradação com muitos nós."]
+          },
+          cabos_titulos: { trancado: "Par Trançado", fibra: "Fibra Óptica", wireless: "Wireless" }
+        },
+        en: {
+          cabos: {
+            trancado: "Common network cable (Ethernet/Profinet). Used to connect PLC to supervisor computer.",
+            fibra: "The glass cable. Used for long-distance data in the factory without motor interference.",
+            wireless: "Wireless network. Used to monitor sensors in mobile or hard-to-reach places."
+          },
+          topologias: {
+            estrela: "All machines connect to a central device (Switch). If one machine fails, others keep running.",
+            barramento: "Machines are daisy-chained (like train cars). If the cable breaks in the middle, half the factory stops."
+          },
+          vantagens: {
+            estrela: ["⭐ Isolated maintenance: a node failure doesn't affect others.", "🔌 Easy expansion: just connect to the switch.", "📊 Centralized monitoring."],
+            barramento: ["📡 Low cabling cost.", "🔗 Simple to implement in small networks.", "🔄 Fewer active devices."]
+          },
+          desvantagens: {
+            estrela: ["⚠️ Single point of failure: if the switch fails, the whole network stops.", "💰 Higher cost with switch and cabling."],
+            barramento: ["⛓️ If the cable breaks, part of the network is isolated.", "🐌 Degradation with many nodes."]
+          },
+          cabos_titulos: { trancado: "Twisted Pair", fibra: "Fiber Optic", wireless: "Wireless" }
+        },
+        es: {
+          cabos: {
+            trancado: "Cable de red común (Ethernet/Profinet). Se usa para conectar el PLC al computador del supervisor.",
+            fibra: "El cable de vidrio. Se usa para datos a larga distancia en la fábrica sin interferencia de motores.",
+            wireless: "Red inalámbrica. Se usa para monitorear sensores en lugares móviles o de difícil acceso."
+          },
+          topologias: {
+            estrela: "Todas las máquinas se conectan a un dispositivo central (Switch). Si una falla, las otras siguen funcionando.",
+            barramento: "Las máquinas se conectan en línea (como vagones de tren). Si el cable se rompe, la mitad de la fábrica se detiene."
+          },
+          vantagens: {
+            estrela: ["⭐ Mantenimiento aislado: falla de un nodo no afecta a otros.", "🔌 Fácil expansión: conectar al switch.", "📊 Monitoreo centralizado."],
+            barramento: ["📡 Bajo costo de cableado.", "🔗 Simple de implementar en redes pequeñas.", "🔄 Menos equipos activos."]
+          },
+          desvantagens: {
+            estrela: ["⚠️ Punto único de fallo: si el switch falla, toda la red se detiene.", "💰 Mayor costo con switch y cableado."],
+            barramento: ["⛓️ Si el cable se rompe, parte de la red queda aislada.", "🐌 Degradación con muchos nodos."]
+          },
+          cabos_titulos: { trancado: "Par Trenzado", fibra: "Fibra Óptica", wireless: "Inalámbrico" }
+        }
+      };
+
+      // Estado
+      let lang = 'pt';
+      let temaEscuro = false;
+      let cookieAceito = false;
+
+      // Elementos
+      const body = document.body;
+      const themeToggle = document.getElementById('themeToggle');
+      const cookieBanner = document.getElementById('cookieBanner');
+      const acceptBtn = document.getElementById('acceptCookies');
+      const caboInfo = document.getElementById('caboDesc');
+      const topoDesc = document.getElementById('topoDesc');
+      const infoTitle = document.querySelector('#caboInfo h4 span');
+      const topoInfoTitle = document.querySelector('#topoInfo h4 span');
+
+      // ------- FUNÇÕES -------
+      function aplicarIdioma(langKey) {
+        const data = dados[langKey];
+        if (!data) return;
+        // Atualiza textos estáticos (data-key)
+        document.querySelectorAll('[data-key]').forEach(el => {
+          const key = el.getAttribute('data-key');
+          // mapeamento para textos simples
+          const map = {
+            cabos: langKey === 'pt' ? 'Cabos Industriais' : langKey === 'en' ? 'Industrial Cables' : 'Cabos Industriales',
+            topologias: langKey === 'pt' ? 'Topologias' : langKey === 'en' ? 'Topologies' : 'Topologías',
+            info_titulo: langKey === 'pt' ? 'Clique em um cabo' : langKey === 'en' ? 'Click a cable' : 'Haga clic en un cable',
+            info_padrao: langKey === 'pt' ? 'Selecione um dos cabos acima para ver onde é usado na fábrica.' : 
+                          langKey === 'en' ? 'Select one of the cables above to see where it is used in the factory.' :
+                          'Seleccione uno de los cables para ver su uso en la fábrica.',
+            topo_info_titulo: langKey === 'pt' ? 'Detalhes da Topologia' : langKey === 'en' ? 'Topology Details' : 'Detalles de Topología',
+            topo_padrao: langKey === 'pt' ? 'Escolha um layout para ver vantagens e desvantagens.' :
+                          langKey === 'en' ? 'Choose a layout to see advantages and disadvantages.' :
+                          'Elija un diseño para ver ventajas y desventajas.',
+            cookie_text: langKey === 'pt' ? 'Aceite cookies para melhor experiência.' :
+                          langKey === 'en' ? 'Accept cookies for a better experience.' :
+                          'Acepte cookies para una mejor experiencia.',
+            cookie_btn: langKey === 'pt' ? 'Aceitar' : langKey === 'en' ? 'Accept' : 'Aceptar',
+            estrela_tit: langKey === 'pt' ? 'Rede em Estrela' : langKey === 'en' ? 'Star Network' : 'Red en Estrella',
+            barramento_tit: langKey === 'pt' ? 'Rede em Barramento' : langKey === 'en' ? 'Bus Network' : 'Red en Bus',
+            estrela_sub: langKey === 'pt' ? 'Switch central' : langKey === 'en' ? 'Central switch' : 'Switch central',
+            barramento_sub: langKey === 'pt' ? 'Linha contínua' : langKey === 'en' ? 'Continuous line' : 'Línea continua',
+          };
+          if (map[key]) el.textContent = map[key];
+        });
+
+        // Atualiza descrições cabos (cards)
+        document.querySelectorAll('.card').forEach(card => {
+          const tipo = card.getAttribute('data-cabo');
+          const p = card.querySelector('p');
+          if (tipo && data.cabos[tipo]) {
+            p.textContent = data.cabos[tipo];
+          }
+        });
+
+        // Atualiza título dos cards (se quiser)
+        document.querySelectorAll('.card h3').forEach((h3, idx) => {
+          const card = h3.closest('.card');
+          const tipo = card.getAttribute('data-cabo');
+          if (tipo && data.cabos_titulos[tipo]) {
+            h3.textContent = data.cabos_titulos[tipo];
+          }
+        });
+
+        // Atualiza descrição ativa se houver
+        const caboAtivo = document.querySelector('.card.active');
+        if (caboAtivo) {
+          const tipo = caboAtivo.getAttribute('data-cabo');
+          if (tipo && data.cabos[tipo]) {
+            caboInfo.textContent = data.cabos[tipo];
+          }
+        }
+
+        // Atualiza topologia ativa
+        const topoAtivo = document.querySelector('.topo-card.active');
+        if (topoAtivo) {
+          const tipo = topoAtivo.getAttribute('data-topo');
+          if (tipo) {
+            mostrarTopoInfo(tipo, langKey);
+          }
+        } else {
+          // texto padrão
+          const padrao = data.topo_padrao || 'Escolha um layout.';
+          topoDesc.innerHTML = `<p>${padrao}</p>`;
+        }
+      }
+
+      function mostrarTopoInfo(tipo, langKey) {
+        const data = dados[langKey];
+        if (!data) return;
+        const topo = data.topologias[tipo];
+        const vantagens = data.vantagens[tipo] || [];
+        const desvantagens = data.desvantagens[tipo] || [];
+
+        let html = `<p style="font-weight:500; margin-bottom:0.8rem;">${topo || ''}</p>`;
+        html += `<div style="display:flex; flex-wrap:wrap; gap:2rem; margin-top:0.8rem;">`;
+        html += `<div><strong>✅ Vantagens</strong><ul class="vantagens">`;
+        vantagens.forEach(v => html += `<li><i class="fas fa-check-circle"></i> ${v}</li>`);
+        html += `</ul></div>`;
+        html += `<div><strong>⚠️ Desvantagens</strong><ul class="vantagens">`;
+        desvantagens.forEach(d => html += `<li><i class="fas fa-exclamation-triangle"></i> ${d}</li>`);
+        html += `</ul></div></div>`;
+        topoDesc.innerHTML = html;
+      }
+
+      // ------- EVENTOS -------
+      // Abas
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          const tabId = this.getAttribute('data-tab');
+          document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+          document.getElementById(tabId).classList.add('active');
+        });
+      });
+
+      // Cabos
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', function() {
+          document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+          const tipo = this.getAttribute('data-cabo');
+          const data = dados[lang];
+          if (tipo && data.cabos[tipo]) {
+            caboInfo.textContent = data.cabos[tipo];
+          }
+        });
+      });
+
+      // Topologias
+      document.querySelectorAll('.topo-card').forEach(card => {
+        card.addEventListener('click', function() {
+          document.querySelectorAll('.topo-card').forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+          const tipo = this.getAttribute('data-topo');
+          if (tipo) {
+            mostrarTopoInfo(tipo, lang);
+          }
+        });
+      });
+
+      // Idioma
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const langKey = this.getAttribute('data-lang');
+          lang = langKey;
+          aplicarIdioma(langKey);
+          // atualiza ativo visual
+          document.querySelectorAll('.lang-btn').forEach(b => b.style.opacity = '0.7');
+          this.style.opacity = '1';
+        });
+      });
+      // marca o PT como ativo
+      document.querySelector('.lang-btn[data-lang="pt"]').style.opacity = '1';
+
+      // Tema
+      themeToggle.addEventListener('click', function() {
+        temaEscuro = !temaEscuro;
+        body.classList.toggle('dark', temaEscuro);
+        this.innerHTML = temaEscuro ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      });
+
+      // Cookie
+      acceptBtn.addEventListener('click', function() {
+        cookieAceito = true;
+        cookieBanner.style.display = 'none';
+      });
+
+      // Inicialização
+      aplicarIdioma('pt');
+
+      // Se já tiver cookie, esconder
+      if (localStorage.getItem('cookieAccepted') === 'true') {
+        cookieBanner.style.display = 'none';
+      } else {
+        cookieBanner.style.display = 'flex';
+      }
+
+      acceptBtn.addEventListener('click', function() {
+        localStorage.setItem('cookieAccepted', 'true');
+        cookieBanner.style.display = 'none';
+      });
+
+    })();
+  </script>
+</body>
+</html>
